@@ -1,0 +1,63 @@
+{include file='src/view/header.html'}
+    <div class="container">
+        <div class="card">
+            <div class="card-header">Liste des utilisateurs</div>
+            <div class="card-body">
+                <table class="table">
+                    <tr>
+                        <th>Identifiant</th>
+                        <th>Prenom</th>
+                        <th>Nom</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    </tr>
+                    {foreach from=$users item=$user}
+                        <tr
+                                {if isset($idUser)}
+                                    {if $idUser == $user->getId()}
+                                        class="alert alert-primary"
+                                    {/if}
+                                {/if}
+                        >
+                            <td>{$user->getId()}</td>
+                            <td>{$user->getPrenom()}</td>
+                            <td>{$user->getNom()}</td>
+                            <td>{$user->getEmail()}</td>
+                            <td><a href="{$url_base}UserRoles/affectation/{$user->getId()}">Affecter un role</a></td>
+                        </tr>
+                    {/foreach}
+                </table>
+                <div>Liste des roles disponible</div>
+                <table class="table">
+                    <tr>
+                        <th>Libelle du role</th>
+                        <th>Affectation</th>
+                    </tr>
+                    <form method="post" action="{$url_base}UserRoles/affecter">
+                    {foreach from=$roles item=role}
+
+                            <tr>
+                                <td>{$role->getNom()}</td>
+                                <td>
+                                    <input type="hidden" name="idUser" {if isset($idUser)} value="{$idUser}" {/if} />
+                                    <input type="checkbox"
+                                           {if isset($usersroles)}
+                                                {$role->chercherRole($usersroles, $role->getNom())}
+                                           {/if}
+                                    name="roles[]" value="{$role->getNom()}"/></td>
+                            </tr>
+                    {/foreach}
+                    {if isset($usersroles)}
+                        <tr>
+                            <td colspan="2">
+                                <input class="btn btn-success" type="submit" value="Attribuer roles"/>
+                            </td>
+                        </tr>
+                        {/if}
+                    </form>
+                </table>
+
+            </div>
+        </div>
+    </div>
+{include file='src/view/footer.html'}
